@@ -24,6 +24,7 @@ import org.elasticsearch.common.Unicode;
 import org.elasticsearch.rest.support.AbstractRestRequest;
 import org.elasticsearch.rest.support.RestUtils;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,7 +90,12 @@ public class ThriftRestRequest extends AbstractRestRequest implements org.elasti
         if (!request.isSetBody()) {
             return Bytes.EMPTY_ARRAY;
         }
-        return request.bufferForBody().array();
+
+        ByteBuffer buf = request.bufferForBody();
+        byte[] b = new byte[buf.remaining()];
+        buf.get(b);
+
+        return b;
     }
 
     @Override public int contentByteArrayOffset() {
